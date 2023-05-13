@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const { Configuration, OpenAIApi } = require("openai");
 const readline = require("readline");
 const { program } = require("commander");
@@ -5,13 +7,13 @@ const { program } = require("commander");
 program
   .name("chatgpt-cmd")
   .usage("[options]")
-  .option("-key, --openAiKey <secret>", "open ai api key");
+  .option("-key, --secretKey <string>", "open ai key");
 
-program.parse(process.argv);
+program.parse();
 
-const options = program.opts();
+const options = program.opts(process.argv);
 
-const key = options.OpenAiKey || "";
+const key = options.secretKey || "";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -19,7 +21,7 @@ const rl = readline.createInterface({
 });
 
 const configuration = new Configuration({
-  apiKey: process.env["openai-key"],
+  apiKey: key,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -63,4 +65,6 @@ if (key) {
   startChat(false);
 } else {
   console.log("please enter the key");
+  program.outputHelp();
+  process.exit(0);
 }
